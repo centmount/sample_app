@@ -10,9 +10,21 @@ Rails.application.routes.draw do
   get    '/login',    to: 'sessions#new'
   post   '/login',    to: 'sessions#create'
   delete '/logout',   to: 'sessions#destroy'
-  resources :users
+  
+  resources :users do
+    member do
+      get :following, :followers
+    end
+  end
+  
   resources :account_activations, only: [:edit]
   resources :password_resets,     only: [:new, :create, :edit, :update]
   resources :microposts,          only: [:create, :destroy]
+  resources :relationships,       only: [:create, :destroy]
   
+  # 本番環境で、ルーティングが存在しないパスへアクセス(GET)があった場合、ルート(/)へリダイレクトさせるが、
+  # 'rails/active_storage'が含まれているパスはリダイレクト対象外にする
+  get '*path', to: redirect('/'), constraints: lambda { |req| req.path.exclude? 'rails/active_storage'}
+
 end
+
