@@ -292,6 +292,18 @@ span.image {
   }
 }
 
+/* reacting */
+
+.glyphicon-star {
+  color: deeppink;
+}
+.btn-default:hover > .glyphicon-star-empty {
+  color: deeppink;
+}
+.btn-default {
+  position: relative;
+  left: 60px;
+}
 
 
 

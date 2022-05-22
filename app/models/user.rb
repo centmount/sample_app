@@ -6,9 +6,10 @@ class User < ApplicationRecord
   has_many :passive_relationships, class_name:  "Relationship",
                                    foreign_key: "followed_id",
                                    dependent:   :destroy
-  
   has_many :following, through: :active_relationships, source: :followed
   has_many :followers, through: :passive_relationships, source: :follower
+  has_many :reactions, dependent: :destroy
+  has_many :reacting, through: :reactions, source: :micropost
                                   
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save   :downcase_email
@@ -104,7 +105,23 @@ class User < ApplicationRecord
   def following?(other_user)
     following.include?(other_user)
   end
-
+  
+  
+   # リアクションする
+  def react(micropost)
+    reactions.create(micropost_id: micropost.id)
+  end
+  
+  # リアクションを解除
+  def un_react(micropost)
+    reactions.find_by(micropost_id: micropost.id).destroy
+  end
+  
+  # 現在のユーザがリアクションしていたらtrue
+  def reacting?(micropost)
+    reacting.include?(micropost)
+  end
+  
   
   private
 

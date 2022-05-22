@@ -1,4 +1,4 @@
-<li id="micropost-<%= micropost.id %>">
+<li id="micropost-<%= micropost.id %>" data-micropost-id="<%= micropost.id %>">
   <%= link_to gravatar_for(micropost.user, size: 50), micropost.user %>
   <span class="user"><%= link_to micropost.user.name, micropost.user %></span>
   <span class="content">
@@ -13,4 +13,14 @@
                                        data: { confirm: "You sure?" } %>
     <% end %>
   </span>
+  <% if current_user && !current_user?(micropost.user) %>
+    <span class="react" id="react_form_<%= micropost.id %>">
+      <% if micropost.react_users.include?(current_user) %>
+        <%= render "microposts/un_react", micropost: micropost %>
+      <% else %>
+        <%= render "microposts/react", micropost: micropost %>
+      <% end %>
+    </span>
+  <% end %>
 </li>
+

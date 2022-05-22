@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  
+
   get 'password_resets/new'
   get 'password_resets/edit'
   root 'static_pages#home'
@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   
   resources :users do
     member do
-      get :following, :followers
+      get :following, :followers, :reacting
     end
   end
   
@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   resources :password_resets,     only: [:new, :create, :edit, :update]
   resources :microposts,          only: [:create, :destroy]
   resources :relationships,       only: [:create, :destroy]
+  resources :reactions,           only: [:create, :destroy]
 
 end
 

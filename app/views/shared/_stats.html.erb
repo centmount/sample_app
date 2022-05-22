@@ -12,4 +12,12 @@
     </strong>
     followers
   </a>
+  <% if @user == current_user %>
+    <a href="<%= reacting_user_path(@user) %>">
+      <strong id="reacting" class="stat">
+        <%= @user.reacting.count %>
+      </strong>
+      reacting
+    </a>
+  <% end %>
 </div>
