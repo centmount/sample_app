@@ -1,0 +1,14 @@
+<% provide(:title, @title) %>
+<h1><%= @title %></h1>
+
+<%= render 'search' %>
+
+
+<%= will_paginate %>
+
+<ul class="users">
+  <%= render @users %>
+</ul>
+
+<%= will_paginate %>
+

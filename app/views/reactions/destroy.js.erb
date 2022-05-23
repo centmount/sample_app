@@ -1,0 +1,7 @@
+$("#reacting").html('<%= @user.reacting.count %>');
+$("#react_form_<%= @micropost.id %>").html("<%= escape_javascript(render('microposts/react',
+                micropost: @micropost)) %>");
+                
+                
+                
+                
