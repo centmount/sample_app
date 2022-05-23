@@ -5,14 +5,37 @@ class UsersController < ApplicationController
   before_action :admin_user,     only: :destroy
   
   def index
-    @users = User.where(activated: true).paginate(page: params[:page])
+    # @users = User.where(activated: true).paginate(page: params[:page])
+    if params[:q] && params[:q].reject { |key, value| value.blank? }.present?
+      @q = User.ransack(search_params, activated: true)
+      @title = "Search Result"
+    else
+      @q = User.ransack(activated: true)
+      @title = 'All Users'
+    end
+    @users = @q.result.paginate(page: params[:page])
+    if @users.empty?
+      flash.now[:danger] = 'Search String Not Found'
+    end
   end
 
   def show
     @user = User.find(params[:id])
-    redirect_to root_url and return unless @user.activated
-    @microposts = @user.microposts.paginate(page: params[:page])
+    redirect_to root_url and return unless @user.activated?
+    # @microposts = @user.microposts.paginate(page: params[:page])
+    if params[:q] && params[:q].reject { |key, value| value.blank? }.present?
+      @q =  @user.microposts.ransack(microposts_search_params)
+      @microposts = @q.result.paginate(page: params[:page])
+      if @microposts.empty?
+        flash.now[:danger] = 'Search String Not Found'
+      end
+    else
+      @q = Micropost.ransack
+      @microposts = @user.microposts.paginate(page: params[:page])
+    end
+    @url = user_path(@user)
   end
+  
   
   def new
     @user = User.new
@@ -73,6 +96,10 @@ class UsersController < ApplicationController
     def user_params
       params.require(:user).permit(:name, :email, :password,
                                    :password_confirmation)
+    end
+    
+    def search_params
+      params.require(:q).permit(:name_cont)
     end
     
     # beforeフィルター

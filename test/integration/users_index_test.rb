@@ -31,6 +31,17 @@ class UsersIndexTest < ActionDispatch::IntegrationTest
     assert_select 'a', text: 'delete', count: 0
   end
   
+  test "search found and not_found" do
+    log_in_as(@non_admin) 
+    get users_path
+    # found
+    get users_path, params: { q: { name_cont: "Example" } }
+    assert_select  'a', text: @admin.name 
+    # not found
+    get users_path, params: { q: { name_cont: "aaaaaa" } }
+    assert_not flash.empty?
+  end
+  
 end
 
 
